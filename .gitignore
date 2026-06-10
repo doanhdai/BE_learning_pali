@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# System/cache directories
+.npm/
+Library/
+.cache/
+
+# Environment
+.env
+.env.*
+
+# Prisma generated client
+node_modules/.prisma/
+
+# Uploads (data files, not tracked)
+uploads/*
+!uploads/.gitkeep
+
+# Logs
+npm-debug.log*
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/

@@ -1,0 +1,65 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Unit {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  orderIndex  Int
+  lessons     Lesson[]
+
+  @@map("units")
+}
+
+model Lesson {
+  id           Int            @id @default(autoincrement())
+  unitId       Int
+  title        String
+  orderIndex   Int
+  unit         Unit           @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  questions    Question[]
+  userProgress UserProgress[]
+
+  @@map("lessons")
+}
+
+model Question {
+  id             Int      @id @default(autoincrement())
+  lessonId       Int
+  type           String   // 'vocab', 'sentence_build', 'manual_input'
+  content        String   // Câu hỏi gốc (Pali hoặc Việt)
+  imageUrl       String?
+  correctAnswers Json     // Mảng các đáp án đúng
+  distractors    Json?    // Các thẻ từ nhiễu
+  explanation    String?
+  lesson         Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@map("questions")
+}
+
+model UserProgress {
+  userId       Int
+  lessonId     Int
+  isCompleted  Boolean  @default(false)
+  lastAccessed DateTime @default(now()) @updatedAt
+  lesson       Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@id([userId, lessonId])
+  @@map("user_progress")
+}
+
+model Dictionary {
+  id        Int     @id @default(autoincrement())
+  wordPali  String  @unique
+  meaningVn String
+  wordType  String?
+  example   String?
+
+  @@map("dictionary")
+}
